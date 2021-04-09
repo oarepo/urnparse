@@ -11,11 +11,12 @@ import re
 from urllib.parse import parse_qs, quote, unquote, urlencode
 
 URN_SCHEME = 'urn'
-NID_PATTERN = re.compile(r'^[0-9a-z][0-9a-z-]{1,31}$')
+NID_PATTERN = re.compile(r'^[0-9a-z][0-9a-z-]{1,31}$', flags=re.IGNORECASE)
 NSS_PCHAR = '[a-z0-9-._~]|%[a-f0-9]{2}|[!$&\'()*+,;=]|:|@'
-NSS_PATTERN = re.compile(fr'^({NSS_PCHAR})({NSS_PCHAR}|/|\?)*$')
+NSS_PATTERN = re.compile(fr'^({NSS_PCHAR})({NSS_PCHAR}|/|\?)*$', re.IGNORECASE)
 RQF_PATTERN = re.compile(
-    r"^(?!$)(?:\?\+(?P<resolution_string>.*?))?(?:\?=(?P<query_string>.*?))?(?:#(?P<fragment>.*?))?$")
+    r"^(?!$)(?:\?\+(?P<resolution_string>.*?))?(?:\?=(?P<query_string>.*?))?(?:#(?P<fragment>.*?))?$",
+    flags=re.IGNORECASE)
 
 
 def _validate_nid(value, min_len, max_len, pattern):
@@ -46,7 +47,9 @@ class NSIdentifier:
 
     def __eq__(self, other):
         """Compare two Namespace identifiers."""
-        return str(self.value) == str(other.value)
+        if isinstance(other, self.__class__):
+            return str(self.value) == str(other.value)
+        return str(self) == str(other)
 
 
 class NSSString:
@@ -75,7 +78,9 @@ class NSSString:
 
     def __eq__(self, other):
         """Compare two NSSStrings."""
-        return str(self.encoded) == str(other.encoded)
+        if isinstance(other, self.__class__):
+            return str(self.encoded) == str(other.encoded)
+        return str(self) == str(other)
 
 
 class RQFComponent:
@@ -123,6 +128,10 @@ class RQFComponent:
                f'{self.QUERY_SEPERATOR + urlencode(self.query, quote_via=quote) if len(self.query) else ""}' \
                f'{self.FRAGMENT_SEPERATOR + self.fragment if self.fragment else ""}'
 
+    def __eq__(self, other):
+        """Compare two RQFComponents."""
+        return str(self) == str(other)
+
 
 class URN8141:
     """
@@ -154,7 +163,7 @@ class URN8141:
         return self._nss
 
     @property
-    def rqf_components(self) -> RQFComponent:
+    def rqf_component(self) -> RQFComponent:
         """Rqfcomponent parts of the URN."""
         return self._rqf
 
@@ -171,13 +180,9 @@ class URN8141:
 
         nid = urn_string.split(':')[1]
         specific_part = urn_string[(len(URN_SCHEME) + len(nid) + 2):].rstrip('#')
-        print(specific_part)
         eof_nss = cls._get_nss_indices(specific_part)[-1]
         nss = specific_part[:eof_nss]
-        print(NSS_PATTERN)
-        print(nss)
         rqf = cls._parse_rqf_component(specific_part[eof_nss:])
-        print(rqf)
         return cls(nid=NSIdentifier(nid), nss=NSSString(nss, encoded), rqf=rqf)
 
     @classmethod
@@ -213,7 +218,9 @@ class URN8141:
 
     def __eq__(self, other):
         """Compare two URNs."""
-        return self._nid == other.namepace_id and self._nss == other.specific_string
+        if isinstance(other, self.__class__):
+            return self._nid == other.namespace_id and self._nss == other.specific_string
+        return str(self) == str(other)
 
 
 class InvalidURNFormatError(Exception):

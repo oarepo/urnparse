@@ -45,4 +45,16 @@ def test_rqf_component():
 
 def test_urn():
     urn = URN8141.from_string('urn:tests:example:attributes:123?=key=value%3Asubvalue#example.org')
-    assert urn is None
+    assert urn == 'urn:tests:example:attributes:123?=key=value%3Asubvalue#example.org'
+    assert urn.namespace_id == 'tests'
+    assert urn.specific_string == 'example:attributes:123'
+    assert urn.rqf_component == '?=key=value%3Asubvalue#example.org'
+
+    urn2 = URN8141.from_string('urn:tests:example:attributes:234?=key=value%3Asubvalue#example.org')
+    assert urn != urn2
+
+    with pytest.raises(InvalidURNFormatError):
+        URN8141.from_string('uri:tests:example:attributes:234?=key=value%3Asubvalue#example.org')
+
+    with pytest.raises(InvalidURNFormatError):
+        URN8141.from_string('uri:tests#example.org')
