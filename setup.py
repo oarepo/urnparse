@@ -13,8 +13,6 @@ from setuptools import find_packages, setup
 
 readme = open('README.md').read()
 
-OAREPO_VERSION = os.environ.get('OAREPO_VERSION', '3.3.0')
-
 tests_require = [
 ]
 
