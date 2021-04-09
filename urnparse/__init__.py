@@ -97,7 +97,7 @@ class RQFComponent:
         if query_string != '':
             query_args = {k: v[0] for k, v in parse_qs(query_string).items()}
         if resolution_string != '':
-            resolution_args = parse_qs(resolution_string)
+            resolution_args = {k: v[0] for k, v in parse_qs(resolution_string).items()}
 
         self._resolution_args = resolution_args
         self._query_args = query_args
