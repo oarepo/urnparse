@@ -12,7 +12,7 @@ pip install urnparse
 
 ## Usage
 
-### Create URN object from URN RFC 8141 formatted string
+### Create URN object from RFC 8141 formatted string
 To validate a given URN string against the RFC 8141 specification and construct
 an URN object from it, use the `URN8141.from_string()` method:
 
