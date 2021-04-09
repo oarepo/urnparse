@@ -30,8 +30,10 @@ You can then access the specific URN components:
 ```python
 print(urn.namespace_id)
 # example
-print(urn.specific_string.value)
+print(urn.specific_string.decoded)
 # example.org:resources:example resource
+print(urn.specific_string.parts)
+# ['example.org', 'resources', 'example resource']
 print(urn.rqf_component.resolution)
 # {'res1': 'a'}
 print(urn.rqf_component.query)

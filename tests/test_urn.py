@@ -26,11 +26,13 @@ def test_ns_identifier():
 def test_nss_string():
     nss = NSSString('example.org:resource:test%20space')
     assert nss.encoded == 'example.org:resource:test%20space'
-    assert nss.value == 'example.org:resource:test space'
+    assert nss.decoded == 'example.org:resource:test space'
 
     nss2 = NSSString('example.org:resource:test space', encoded=False)
     assert nss.encoded == 'example.org:resource:test%20space'
-    assert nss.value == 'example.org:resource:test space'
+    assert nss.decoded == 'example.org:resource:test space'
+
+    assert len(nss.parts) == 3
 
 
 def test_rqf_component():

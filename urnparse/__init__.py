@@ -62,15 +62,20 @@ class NSSString:
                 raise InvalidURNFormatError('NSS string is invalid.')
 
             self.encoded = val
-            self.value = unquote(val)
+            self._value = unquote(val)
         else:
             self.encoded = quote(val)
-            self.value = val
+            self._value = val
 
     @property
     def decoded(self):
         """URI Decoded value of NSSString."""
-        return self.value
+        return self._value
+
+    @property
+    def parts(self):
+        """Colon-separated parts of a NSSString."""
+        return self._value.split(':')
 
     def __repr__(self):
         """Representation of NSSString."""
