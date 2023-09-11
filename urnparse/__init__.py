@@ -155,7 +155,7 @@ class URN8141:
         """
         self._nid = nid
         self._nss = nss
-        self._rqf = rqf
+        self._rqf = rqf if rqf else RQFComponent('', '', '')
 
     @property
     def namespace_id(self) -> NSIdentifier:
