@@ -60,3 +60,9 @@ def test_urn():
 
     with pytest.raises(InvalidURNFormatError):
         URN8141.from_string('uri:tests#example.org')
+
+def test_urn_null_rfq():
+    nid = NSIdentifier('test')
+    nss = NSSString('example.org:resource:test%20space')
+    urn = URN8141(nid=nid, nss=nss)
+    assert str(urn) == "urn:test:example.org:resource:test%20space"
