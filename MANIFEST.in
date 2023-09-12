@@ -10,4 +10,4 @@ include *.sh
 include LICENSE
 include pytest.ini
 
-prune tests/
+prune tests

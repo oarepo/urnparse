@@ -1,8 +1,0 @@
-{
-    "workbench.colorCustomizations": {
-        "editorInfo.foreground": "#0080ff6a"
-    },
-    "conventionalCommits.scopes": [
-        "release"
-    ]
-}
