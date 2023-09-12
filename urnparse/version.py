@@ -7,4 +7,4 @@
 
 """Python library for generating and parsing and RFC 8141 compliant uniform resource names (URN)."""
 
-__version__ = '0.2.0'
+__version__ = "0.2.1"
