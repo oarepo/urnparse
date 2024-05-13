@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Miroslav Bauer @ CESNET.
+# Copyright (C) 2024 CESNET.
 #
 # urnparse is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -23,7 +23,9 @@ setup_requires = [
     "pytest-runner>=3.0.0,<5",
 ]
 
-install_requires = []
+install_requires = [
+        "typing_extensions>=4.11.0"
+]
 
 packages = find_packages(exclude=["tests"])
 
