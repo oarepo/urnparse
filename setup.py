@@ -21,10 +21,11 @@ extras_require = {
 
 setup_requires = [
     "pytest-runner>=3.0.0,<5",
-    "typing_extensions>=4.11.0"
 ]
 
-install_requires = []
+install_requires = [
+        "typing_extensions>=4.11.0"
+]
 
 packages = find_packages(exclude=["tests"])
 
