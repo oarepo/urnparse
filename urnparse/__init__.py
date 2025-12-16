@@ -13,7 +13,7 @@ from typing import Any, ClassVar, Pattern
 try:
     from typing import Self
 except ImportError:
-    # For backwards comaptibility with Python<3.11
+    # For backwards compatibility with Python<3.11
     from typing_extensions import Self
 
 from urllib.parse import parse_qs, quote, unquote, urlencode
@@ -27,7 +27,7 @@ RQF_PATTERN: Pattern = re.compile(
     flags=re.IGNORECASE)
 
 
-def _validate_nid(value: str, min_len: int, max_len: int, pattern: Pattern[str]):
+def _validate_nid(value: str, min_len: int, max_len: int, pattern: Pattern[str]) -> None:
     strlen = len(value)
     if strlen < min_len:
         raise InvalidURNFormatError(f'{value} is shorter than {min_len}')
@@ -44,16 +44,16 @@ class NSIdentifier:
     MIN_LENGTH: ClassVar[int] = 2
     MAX_LENGTH: ClassVar[int] = 32
 
-    def __init__(self, val: str):
+    def __init__(self, val: str) -> None:
         """Initialize a Namespace identifier."""
         _validate_nid(val, self.MIN_LENGTH, self.MAX_LENGTH, NID_PATTERN)
         self.value = val
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Representation of Namespace identifier."""
         return str(self.value)
 
-    def __eq__(self, other: Self | Any):
+    def __eq__(self, other: Self | Any) -> bool:
         """Compare two Namespace identifiers."""
         if isinstance(other, self.__class__):
             return str(self.value) == str(other.value)
@@ -63,7 +63,7 @@ class NSIdentifier:
 class NSSString:
     """Namespace specific string class."""
 
-    def __init__(self, val: str, encoded:bool=True):
+    def __init__(self, val: str, encoded:bool=True) -> None:
         """Initialize a NSS String."""
         if encoded:
             if len(val) == 0 or not re.match(NSS_PATTERN, val):
@@ -76,20 +76,20 @@ class NSSString:
             self._value = val
 
     @property
-    def decoded(self):
+    def decoded(self) -> str:
         """URI Decoded value of NSSString."""
         return self._value
 
     @property
-    def parts(self):
+    def parts(self) -> list[str]:
         """Colon-separated parts of a NSSString."""
         return self._value.split(':')
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Representation of NSSString."""
         return str(self.encoded)
 
-    def __eq__(self, other: Self | Any):
+    def __eq__(self, other: Self | Any) -> bool:
         """Compare two NSSStrings."""
         if isinstance(other, self.__class__):
             return str(self.encoded) == str(other.encoded)
@@ -103,7 +103,7 @@ class RQFComponent:
     QUERY_SEPERATOR: ClassVar[str] = '?='
     FRAGMENT_SEPERATOR: ClassVar[str] = '#'
 
-    def __init__(self, resolution_string: str, query_string: str, fragment: str):
+    def __init__(self, resolution_string: str, query_string: str, fragment: str) -> None:
         """Initialize a RQF Component."""
         query_args = dict()
         resolution_args = dict()
@@ -127,7 +127,7 @@ class RQFComponent:
         return self._query_args
 
     @property
-    def fragment(self):
+    def fragment(self) -> str:
         """Fragment component."""
         return self._fragment
 
@@ -135,13 +135,13 @@ class RQFComponent:
         """Empty RQFComponent."""
         return len(self.resolution) == len(self.query) == len(self.fragment) == 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Representation of RQFComponent."""
         return f'{self.RESOLUTION_SEPERATOR + urlencode(self.resolution, quote_via=quote) if len(self.resolution) else ""}' \
                f'{self.QUERY_SEPERATOR + urlencode(self.query, quote_via=quote) if len(self.query) else ""}' \
                f'{self.FRAGMENT_SEPERATOR + self.fragment if self.fragment else ""}'
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Compare two RQFComponents."""
         return str(self) == str(other)
 
@@ -153,7 +153,7 @@ class URN8141:
     @see https://tools.ietf.org/html/rfc8141
     """
 
-    def __init__(self, nid: NSIdentifier, nss: NSSString, rqf=None):
+    def __init__(self, nid: NSIdentifier, nss: NSSString, rqf=None) -> None:
         """
         Initialize a RFC 8141 compliant uniform resource name.
 
@@ -181,7 +181,7 @@ class URN8141:
         return self._rqf
 
     @classmethod
-    def from_string(cls, urn_string: str, encoded: bool=True):
+    def from_string(cls, urn_string: str, encoded: bool=True) -> Self:
         """Create an instance from a RFC 8141 formatted URN string.
 
         :param urn_string: A RFC 8141 formatted URN string
@@ -199,7 +199,7 @@ class URN8141:
         return cls(nid=NSIdentifier(nid), nss=NSSString(nss, encoded), rqf=rqf)
 
     @classmethod
-    def _get_nss_indices(cls, specific_part):
+    def _get_nss_indices(cls, specific_part) -> tuple[int, int, int, int]:
         eof = len(specific_part)
         rsi = specific_part.rfind(RQFComponent.RESOLUTION_SEPERATOR)
         qsi = specific_part.rfind(RQFComponent.QUERY_SEPERATOR)
@@ -215,7 +215,7 @@ class URN8141:
         return rsi, qsi, fsi, eof
 
     @classmethod
-    def _parse_rqf_component(cls, rqf_string):
+    def _parse_rqf_component(cls, rqf_string) -> RQFComponent:
         if rqf_string == '':
             return RQFComponent('', '', '')
 
@@ -225,11 +225,11 @@ class URN8141:
 
         return RQFComponent(**matched.groupdict())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Representation of the URN."""
-        return f'urn:{self._nid}:{self._nss}{self._rqf}'
+        return f'{URN_SCHEME}:{self._nid}:{self._nss}{self._rqf}'
 
-    def __eq__(self, other: Self|Any):
+    def __eq__(self, other: Self|Any) -> bool:
         """Compare two URNs."""
         if isinstance(other, self.__class__):
             return self._nid == other.namespace_id and self._nss == other.specific_string
