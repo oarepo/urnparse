@@ -40,6 +40,7 @@ def _validate_nid(value: str, min_len: int, max_len: int, pattern: Pattern[str])
 
 class NSIdentifier:
     """Namespace identifier class."""
+    __slots__ = ("value",)
 
     MIN_LENGTH: ClassVar[int] = 2
     MAX_LENGTH: ClassVar[int] = 32
@@ -62,6 +63,7 @@ class NSIdentifier:
 
 class NSSString:
     """Namespace specific string class."""
+    __slots__ = ("encoded", "_value")
 
     def __init__(self, val: str, encoded:bool=True) -> None:
         """Initialize a NSS String."""
@@ -98,6 +100,7 @@ class NSSString:
 
 class RQFComponent:
     """RQF Component class."""
+    __slots__ = ("_resolution_args", "_query_args", "_fragment")
 
     RESOLUTION_SEPERATOR: ClassVar[str] = '?+'
     QUERY_SEPERATOR: ClassVar[str] = '?='
@@ -152,6 +155,7 @@ class URN8141:
 
     @see https://tools.ietf.org/html/rfc8141
     """
+    __slots__ = ("_nid", "_nss", "_rqf")
 
     def __init__(self, nid: NSIdentifier, nss: NSSString, rqf=None) -> None:
         """
